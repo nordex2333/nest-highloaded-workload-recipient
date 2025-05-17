@@ -1,0 +1,71 @@
+services:
+  app:
+    image: node:22.15.0-alpine
+    container_name: nestjs-app
+    restart: always
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "${APP_PORT_EXTERNAL}:${APP_PORT_INTERNAL}"
+    env_file:
+      - .env
+    command: >
+      sh -c "
+      npm install -g @nestjs/cli &&
+      if [ ! -f package.json ]; then 
+        nest new . --package-manager npm --skip-git --language ts;
+      fi &&
+      if [ ! -f tsconfig.json ]; then 
+        echo '{' > tsconfig.json &&
+        echo '  \"compilerOptions\": {' >> tsconfig.json &&
+        echo '    \"module\": \"commonjs\",' >> tsconfig.json &&
+        echo '    \"target\": \"es6\",' >> tsconfig.json &&
+        echo '    \"strict\": true,' >> tsconfig.json &&
+        echo '    \"esModuleInterop\": true,' >> tsconfig.json &&
+        echo '    \"skipLibCheck\": true,' >> tsconfig.json &&
+        echo '    \"outDir\": \"./dist\"' >> tsconfig.json &&
+        echo '  },' >> tsconfig.json &&
+        echo '  \"include\": [\"src/**/*\"],' >> tsconfig.json &&
+        echo '  \"exclude\": [\"node_modules\", \"dist\"]' >> tsconfig.json &&
+        echo '}' >> tsconfig.json; 
+      fi &&
+      npm install @nestjs/jwt @nestjs/passport passport passport-jwt &&
+      npm install @nestjs/config &&
+      npm install @nestjs/typeorm typeorm mongodb &&
+      npm run start:dev
+      "
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${MONGO_PORT_EXTERNAL}:${MONGO_PORT_INTERNAL}"
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - "${MONGO_EXPRESS_PORT_EXTERNAL}:${MONGO_EXPRESS_PORT_INTERNAL}"
+    env_file:
+      - .env
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: ${MONGO_HOST}
+      ME_CONFIG_MONGODB_PORT: ${MONGO_PORT_INTERNAL}
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+
+volumes:
+  mongo_data:
