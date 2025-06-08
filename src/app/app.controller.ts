@@ -21,7 +21,7 @@ export class AppController {
   @ApiResponse(SwaggerDocs.app.dbHealthCheck.responses[200])
   @ApiResponse(SwaggerDocs.app.dbHealthCheck.responses[500])
   async dbHealthCheck() {
-    const isConnected = this.dataSource.isInitialized;
+    let isConnected = this.dataSource.isInitialized;
 
     if (isConnected) {
       return { status: 'ok', database: 'connected' };

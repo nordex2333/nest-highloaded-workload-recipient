@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Transaction, TransactionType } from './transaction.entity';
 
-const AppDataSource = new DataSource({
+let AppDataSource = new DataSource({
   type: 'mongodb',
   url: 'mongodb://root:example@mongo:27017/nest_test?authSource=admin',
   database: 'nest_test',
@@ -11,7 +11,7 @@ const AppDataSource = new DataSource({
 
 async function seed() {
   await AppDataSource.initialize();
-  const repo = AppDataSource.getMongoRepository(Transaction);
+  let repo = AppDataSource.getMongoRepository(Transaction);
 
   await repo.deleteMany({});
 
@@ -62,7 +62,7 @@ async function seed() {
       id: 'a1bbdf81-1111-4aea-beb3-3e5f433a3001',
       userId: 'user001',
       createdAt: new Date('2024-08-01T09:00:00.000Z'),
-      type: 'earned',
+      type: TransactionType.EARNED,
       amount: 100,
     },
     {
@@ -97,7 +97,7 @@ async function seed() {
       id: 'b2ccdf81-2222-4aea-beb3-3e5f433a3006',
       userId: 'user002',
       createdAt: new Date('2022-04-03T14:00:00.000Z'),
-      type: 'payout',
+      type: TransactionType.PAYOUT,
       amount: 50,
     },
     {
@@ -121,7 +121,6 @@ async function seed() {
       type: TransactionType.PAYOUT,
       amount: 80,
     },
-    
     // Add more mock transactions as needed
   ]);
 

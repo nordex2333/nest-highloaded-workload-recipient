@@ -6,26 +6,26 @@ import { LoggingMiddleware } from './middlewares/logging.middleware';
 import { CacheMiddleware } from './middlewares/cache.middleware';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
+  let app = await NestFactory.create(AppModule);
+  let configService = app.get(ConfigService);
 
   // prefix for api versioning
   app.setGlobalPrefix('api/v1');
 
   // swagger config
-  const config = new DocumentBuilder()
+  let config = new DocumentBuilder()
     .setTitle('OnTarget API Test documentation')
     .setDescription('API documentation for the OnTarget application')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  let document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
 
   app.use(new LoggingMiddleware().use);
   app.use(new CacheMiddleware().use);
 
-  const port = configService.get<number>('app.port') || 3000;
+  let port = configService.get<number>('app.port') || 3000;
   await app.listen(port);
   //remove logs after tests
   console.log(`Application is running on: http://localhost:${port}/api/v1`);

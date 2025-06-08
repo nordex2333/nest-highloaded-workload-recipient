@@ -6,8 +6,8 @@ import configuration from './configuration';
 
 dotenv.config();
 
-const configService = new ConfigService(configuration());
-const mongoConfig = configService.get('mongo');
+let configService = new ConfigService(configuration());
+let mongoConfig = configService.get('mongo');
 
 export default new DataSource({
   type: 'mongodb',

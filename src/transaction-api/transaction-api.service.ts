@@ -13,43 +13,36 @@ export class TransactionApiService {
   async getTransactions(
     startDate?: string,
     endDate?: string,
-    page = 1,
-    limit = 1000,
+    page: number | string = 1,
+    limit: number | string = 1000,
   ) {
-    //AK NEW USE IT
-    let where: any = startDate || endDate ? {
-        createdAt: Between(
-            new Date(startDate || 0), 
-            new Date(endDate || Date.now())
-        )
-    } : {};
+    let pageNum = typeof page === 'string' ? parseInt(page, 10) : page;
+    let limitNum = typeof limit === 'string' ? parseInt(limit, 10) : limit;
 
-    // let where: any = {};
-    // if (startDate && endDate) {
-    //   where.createdAt = Between(new Date(startDate), new Date(endDate));
-    // } else if (startDate) {
-    //   where.createdAt = Between(new Date(startDate), new Date());
-    // } else if (endDate) {
-    //   where.createdAt = Between(new Date(0), new Date(endDate));
-    // }
+    let where: any = {};
+    if (startDate || endDate) {
+      where.createdAt = {};
+      if (startDate) where.createdAt.$gte = new Date(startDate);
+      if (endDate) where.createdAt.$lte = new Date(endDate);
+    }
 
     let [items, totalItems] = await this.transactionRepository.findAndCount({
       where,
-      skip: (page - 1) * limit,
-      take: limit,
+      skip: (pageNum - 1) * limitNum,
+      take: limitNum,
       order: { createdAt: 'DESC' },
     });
 
-    let totalPages = Math.ceil(totalItems / limit);
+    let totalPages = Math.ceil(totalItems / limitNum);
 
     return {
       items,
       meta: {
         totalItems,
         itemCount: items.length,
-        itemsPerPage: limit,
+        itemsPerPage: limitNum,
         totalPages,
-        currentPage: page,
+        currentPage: pageNum,
       },
     };
   }

@@ -8,16 +8,16 @@ export class InitialSeedOfTransactionTable1717690983465 implements MigrationInte
   name = 'InitialSeedOfTransactionTable1717690983465';
 
   private getMongoUrlAndDbName(): { url: string, dbName: string } {
-    const configService = new ConfigService(configuration());
-    const mongoConfig = configService.get('mongo');
-    const url = mongoConfig.connectionString ||
+    let configService = new ConfigService(configuration());
+    let mongoConfig = configService.get('mongo');
+    let url = mongoConfig.connectionString ||
       `mongodb://${mongoConfig.username}:${mongoConfig.password}@${mongoConfig.host}:${mongoConfig.port}?authSource=${mongoConfig.authSource}`;
-    const dbName = mongoConfig.database;
+    let dbName = mongoConfig.database;
     return { url, dbName };
   }
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const transactions = [
+    let transactions = [
       {
         id: '41bbdf81-735c-4aea-beb3-3e5f433a30c5',
         userId: '074092',
@@ -54,9 +54,9 @@ export class InitialSeedOfTransactionTable1717690983465 implements MigrationInte
         amount: 20,
       }
     ]; 
-    const { url, dbName } = this.getMongoUrlAndDbName();
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
+    let { url, dbName } = this.getMongoUrlAndDbName();
+    let client = await MongoClient.connect(url);
+    let db = client.db(dbName);
     
     await db.collection(Transaction.name).insertMany(transactions);
     
@@ -66,16 +66,16 @@ export class InitialSeedOfTransactionTable1717690983465 implements MigrationInte
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const ids = [
+    let ids = [
       '41bbdf81-735c-4aea-beb3-3e5f433a30c5',
       '41bbdf81-735c-4aea-beb3-3e5fasfsdfef',
       '41bbdf81-735c-4aea-beb3-342jhj234nj234',
       '51bbdf81-735c-4aea-beb3-3e5f433a30c6',
       '61bbdf81-735c-4aea-beb3-3e5f433a30c7'
     ];
-    const { url, dbName } = this.getMongoUrlAndDbName();
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
+    let { url, dbName } = this.getMongoUrlAndDbName();
+    let client = await MongoClient.connect(url);
+    let db = client.db(dbName);
     
     await db.collection(Transaction.name).deleteMany({ id: { $in: ids } });
     

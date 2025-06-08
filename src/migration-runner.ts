@@ -8,8 +8,8 @@ dotenv.config();
 async function bootstrap() {
   process.env.RUN_MIGRATIONS = 'true';
   
-  const app = await NestFactory.create(AppModule);
-  const logger = new Logger('MigrationRunner');
+  let app = await NestFactory.create(AppModule);
+  let logger = new Logger('MigrationRunner');
   
   logger.log('Application initialized with migrations enabled');
   logger.log('Migrations have been run successfully');
@@ -20,7 +20,7 @@ async function bootstrap() {
 
 bootstrap()
   .catch((error) => {
-    const logger = new Logger('MigrationRunner');
+    let logger = new Logger('MigrationRunner');
     logger.error('Failed to run migrations', error);
     process.exit(1);
   });
