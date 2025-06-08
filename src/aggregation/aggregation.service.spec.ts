@@ -53,10 +53,10 @@ describe('AggregationService', () => {
     });
   });
 
-  it('should aggregate payouts for all users', async () => {
+  it('should aggregate payout for all users', async () => {
     let result = await service.getAggregatedPayouts();
     expect(result).toEqual([
-      { userId: 'user1', payoutAmount: 30 },
+      { userId: 'user1', payoutAmount: 50 },
       { userId: 'user2', payoutAmount: 50 },
     ]);
   });

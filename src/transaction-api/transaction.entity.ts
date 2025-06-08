@@ -4,7 +4,7 @@ export enum TransactionType {
   EARNED = 'earned',
   SPENT = 'spent',
   PAYOUT = 'payout',
-  PAID_OUT = 'paidout'
+  // PAID_OUT = 'paidout'
 }
 
 @Entity()

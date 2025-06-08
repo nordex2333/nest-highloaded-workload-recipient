@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Transaction, TransactionType } from '../transaction-api/transaction.entity';
 
 @Injectable()
-export class PayoutsService {
+export class PayoutService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,

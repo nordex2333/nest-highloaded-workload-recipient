@@ -19,7 +19,7 @@
    `docker exec -it <container_name> sh`
 
 6. **Run tests:**  
-   `npm test`
+   `docker exec -it nestjs-app npm run test`
 
 7. **Database Migrations:**  
    - Generate a new migration: `npm run migration:generate`  
@@ -102,5 +102,5 @@
 2. Add CQRS pattern to separate read and write operations in/from the database.
 3. Add DTOs (Data Transfer Objects) for request/response validation and typing.
 4. Implement Kafka as a message broker for real-time transaction ingestion.
-5. Adjust API versioning to be more flexible and maintainable.
+5. ✅ Adjust API versioning to be more flexible and maintainable.
 6. ✅ Add database migrations and remove synchronize: true for better schema control.

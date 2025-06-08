@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AggregationModule } from '../aggregation/aggregation.module';
-import { PayoutsModule } from '../payouts/payouts.module';
+import { PayoutModule } from '../payout/payout.module';
 import { AppController } from './app.controller';
 import { TransactionApiModule } from '../transaction-api/transaction-api.module';
 @Module({
@@ -18,11 +18,11 @@ import { TransactionApiModule } from '../transaction-api/transaction-api.module'
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: false,
         migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
-        migrationsRun: configService.get<boolean>('runMigrations') || false,
+        migrationsRun: configService.get<boolean>('RUN_MIGRATIONS') || false,
       }),
     }),
     AggregationModule,
-    PayoutsModule,
+    PayoutModule,
     TransactionApiModule,
   ],
   controllers: [AppController],
