@@ -6,7 +6,7 @@ const AppDataSource = new DataSource({
   url: 'mongodb://root:example@mongo:27017/nest_test?authSource=admin',
   database: 'nest_test',
   entities: [Transaction],
-  synchronize: true,
+  synchronize: false,
 });
 
 async function seed() {

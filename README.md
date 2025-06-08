@@ -19,7 +19,20 @@
    `docker exec -it <container_name> sh`
 
 6. **Run tests:**  
-   `docker exec -it nestjs-app npm run test`
+   `npm test`
+
+7. **Database Migrations:**  
+   - Generate a new migration: `npm run migration:generate`  
+   - Create an empty migration: `npm run migration:create`  
+   - Run migrations: `npm run migration:run`  
+   - Revert the last migration: `npm run migration:revert`  
+   - Show migrations status: `npm run migration:show`  
+   - Run migrations using a dedicated script: `npm run migration:runner`  
+   - Start the app with migrations: `./start-with-migrations.sh`
+   
+   **In Docker environment:**
+   - Run migrations inside Docker: `docker exec -it nestjs-app npm run migration:run`
+   - Run tests in Docker: `docker exec -it nestjs-app npm run test`
 
 7. **Main API endpoints:**  
    [http://localhost:3000/api/v1/](http://localhost:3000/api/v1/)  
@@ -33,6 +46,7 @@
 2. Node.js v22.15.0 (NestJS framework v11.0.1)
 3. MongoDB ^6.16.0
 4. Mongo Express v1.0.2 (Mongo web interface)
+5. TypeORM for database operations and migrations
 
 ---
 
@@ -89,3 +103,4 @@
 3. Add DTOs (Data Transfer Objects) for request/response validation and typing.
 4. Implement Kafka as a message broker for real-time transaction ingestion.
 5. Adjust API versioning to be more flexible and maintainable.
+6. ✅ Add database migrations and remove synchronize: true for better schema control.

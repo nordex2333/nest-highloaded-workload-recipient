@@ -14,6 +14,7 @@ services:
     command: >
       sh -c "
       npm install -g @nestjs/cli &&
+      npm install &&
       if [ ! -f package.json ]; then 
         nest new . --package-manager npm --skip-git --language ts;
       fi &&
