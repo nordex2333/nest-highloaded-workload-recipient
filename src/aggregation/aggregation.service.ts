@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Transaction } from '../transaction-api/transaction.entity';
+import { Transaction, TransactionType } from '../transaction-api/transaction.entity';
 
 @Injectable()
 export class AggregationService {
@@ -11,13 +11,11 @@ export class AggregationService {
   ) {}
 
   async aggregateDataByUserId(userId: string) {
-    let transactions = await this.transactionRepository.find({ where: { userId } });
-
-    let earned = 0, spent = 0, payout = 0, paidOut = 0;
+    let transactions = await this.transactionRepository.find({ where: { userId } });    let earned = 0, spent = 0, payout = 0, paidOut = 0;
     for (let tx of transactions) {
-      if (tx.type === 'earned') earned += tx.amount;
-      if (tx.type === 'spent') spent += tx.amount;
-      if (tx.type === 'payout') {
+      if (tx.type === TransactionType.EARNED) earned += tx.amount;
+      if (tx.type === TransactionType.SPENT) spent += tx.amount;
+      if (tx.type === TransactionType.PAYOUT) {
         payout += tx.amount;
         paidOut += tx.amount;
       }
@@ -26,9 +24,8 @@ export class AggregationService {
 
     return { userId, balance, earned, spent, payout, paidOut };
   }
-
   async getAggregatedPayouts() {
-    let payouts = await this.transactionRepository.find({ where: { type: 'payout' } });
+    let payouts = await this.transactionRepository.find({ where: { type: TransactionType.PAYOUT } });
     let result: Record<string, number> = {};
     for (let tx of payouts) {
       result[tx.userId] = (result[tx.userId] || 0) + tx.amount;

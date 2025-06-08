@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AggregationModule } from '../aggregation/aggregation.module';
 import { PayoutsModule } from '../payouts/payouts.module';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TransactionApiModule } from '../transaction-api/transaction-api.module';
 @Module({
   imports: [
@@ -25,6 +24,6 @@ import { TransactionApiModule } from '../transaction-api/transaction-api.module'
     TransactionApiModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PayoutsService } from './payouts.service';
+import { SwaggerDocs } from '../swagger/swagger-docs';
 
 @ApiTags('Payouts')
 @Controller('payouts')
@@ -8,17 +9,8 @@ export class PayoutsController {
   constructor(private readonly payoutsService: PayoutsService) {}
 
   @Get('requested')
-  @ApiOperation({ summary: 'Get list of requested payouts aggregated by user' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of requested payouts (aggregated by user)',
-    schema: {
-      example: [
-        { userId: '074092', payoutAmount: 30 },
-        { userId: '123456', payoutAmount: 10 },
-      ],
-    },
-  })
+  @ApiOperation(SwaggerDocs.payouts.getRequestedPayouts)
+  @ApiResponse(SwaggerDocs.payouts.getRequestedPayouts.responses[200])
   async getRequestedPayouts() {
     return this.payoutsService.getRequestedPayouts();
   }

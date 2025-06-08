@@ -1,5 +1,12 @@
 import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
 
+export enum TransactionType {
+  EARNED = 'earned',
+  SPENT = 'spent',
+  PAYOUT = 'payout',
+  PAID_OUT = 'paidout'
+}
+
 @Entity()
 export class Transaction {
   @PrimaryColumn()
@@ -11,8 +18,12 @@ export class Transaction {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
-  type: string; // 'earned' | 'spent' | 'payout'
+  @Column({
+    type: 'enum',
+    enum: TransactionType,
+    default: TransactionType.EARNED
+  })
+  type: TransactionType;
 
   @Column('float')
   amount: number;

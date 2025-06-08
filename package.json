@@ -30,7 +30,9 @@
     "@nestjs/typeorm": "^11.0.0",
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
-    "mongodb": "^6.16.0",
+    "glob": "^11.0.2",
+    "lru-cache": "^11.1.0",
+    "mongodb": "^6.17.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
@@ -83,5 +85,11 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "glob": "^11.0.2",
+    "inflight": {
+      "lru-cache": "^11.1.0"
+    }
   }
 }
