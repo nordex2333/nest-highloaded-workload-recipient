@@ -1,4 +1,3 @@
-// Emulates a remote API polled via Redis, with rate limiting and dynamic data
 import { TransactionType } from '../transaction-api/transaction.entity';
 import Redis from 'ioredis';
 import configuration from '../config/configuration';

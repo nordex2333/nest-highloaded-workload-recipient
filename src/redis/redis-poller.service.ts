@@ -1,4 +1,3 @@
-// Service to poll Redis for remote API data and insert into DB
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
