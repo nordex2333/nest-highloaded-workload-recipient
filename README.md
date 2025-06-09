@@ -134,8 +134,8 @@ The NestJS app will automatically poll the Redis broker and insert new transacti
 ## TODO Improvements
 
 1. Adjust `docker-compose` file and move logic related to the NestJS container into a dedicated `Dockerfile`.
-2. Add CQRS pattern to separate read and write operations in/from the database.
-3. Add DTOs (Data Transfer Objects) for request/response validation and typing.
-4. Implement Kafka as a message broker for real-time transaction ingestion.
+2. Add CQRS pattern to separate read and write operations in/from the database. (Not relevant for current logic approach)
+3. ✅Add DTOs (Data Transfer Objects) for response validation and typing.
+4. ✅Implement Kafka or Redis as a message broker for real-time transaction ingestion.
 5. ✅ Adjust API versioning to be more flexible and maintainable.
 6. ✅ Add database migrations and remove synchronize: true for better schema control.
