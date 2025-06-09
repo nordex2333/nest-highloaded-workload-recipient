@@ -8,7 +8,7 @@ export enum TransactionType {
   // PAID_OUT = 'paidout'
 }
 
-@Entity('transaction')
+@Entity('transactions')
 export class Transaction {
   @ObjectIdColumn()
   _id: ObjectId;
