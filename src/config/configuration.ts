@@ -13,10 +13,16 @@ export default () => {
     connectionString: process.env.DATABASE_URL || '',
     authSource: 'admin',
   };
+  let redis = {
+    host: process.env.REDIS_HOST || 'redis',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    rateLimit: parseInt(process.env.REDIS_RATE_LIMIT || '5', 10),
+  };
   return {
     nodeEnv,
     runMigrations,
     app,
     mongo,
+    redis,
   };
 };

@@ -40,6 +40,41 @@
 
 ---
 
+## Redis Integration
+
+- `redis-emulator.ts`: Emulates a remote API, rate-limited, and generates dynamic transaction data for the app to consume via Redis Pub/Sub.
+- `redis-poller.service.ts`: Polls the Redis broker for new transaction data and inserts it into the database automatically.
+- `start-redis-emulator.sh`: Shell script to launch the Redis emulator inside the Docker container.
+- `npm run redis:emulator`: NPM script to launch the Redis emulator (runs in the host shell, not in Docker).
+
+### How to Launch Redis Emulator
+
+After starting all services with:
+```sh
+   docker-compose up -d
+```
+
+**Wait until the NestJS app is fully started and ready (check logs or wait for Swagger docs to be available).**
+
+Then, start the Redis Emulator (inside the app container):
+- Using the shell script (recommended):
+  ```sh
+  sh start-redis-emulator.sh
+  ```
+- Or using the npm script (host shell, not in Docker):
+  ```sh
+  npm run redis:emulator
+  ```
+- Or manually:
+  ```sh
+  docker exec -it nestjs-app npx ts-node src/redis/redis-emulator.ts
+  ```
+> **Note:** The emulator must be launched only after the NestJS app is running, otherwise the poller will not be able to fetch data.
+
+The NestJS app will automatically poll the Redis broker and insert new transactions into the database at regular intervals (5 times per minute).
+
+---
+
 ## Technologies in Use
 
 1. Docker
@@ -88,7 +123,7 @@
 
 ### 2. Test Coverage
 - Each service method is tested for expected output given mock data.
-- Edge cases (e.g., no transactions, multiple payouts) are covered in the tests.
+- Edge cases (e.g., no transactions, multiple payouts) are cered in the tests.
 
 ### 3. Test Automation
 - Tests are run automatically using Jest via `npm run test`.

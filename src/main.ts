@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { LoggingMiddleware } from './middlewares/logging.middleware';
 import { CacheMiddleware } from './middlewares/cache.middleware';
+import { RedisPollerService } from './redis/redis-poller.service';
 
 async function bootstrap() {
   let app = await NestFactory.create(AppModule);
@@ -24,6 +25,10 @@ async function bootstrap() {
 
   app.use(new LoggingMiddleware().use);
   app.use(new CacheMiddleware().use);
+
+  // start poller
+  let poller = app.get(RedisPollerService);
+  poller.startPolling();
 
   let port = configService.get<number>('app.port') || 3000;
   await app.listen(port);

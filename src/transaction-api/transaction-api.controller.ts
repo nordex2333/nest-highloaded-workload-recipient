@@ -20,7 +20,7 @@ export class TransactionApiController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('page') page = 1,
-    @Query('limit') limit = 1000,
+    @Query('limit') limit = 100,
   ): Promise<TransactionListResponseDto> {
     return this.transactionApiService.getTransactions(startDate, endDate, page, limit);
   }

@@ -36,6 +36,19 @@
 - Fixed TypeScript errors related to missing or mismatched properties in aggregation results.
 - Ensured all code, DTOs, and documentation are consistent and type-safe with the new structure.
 
+## 7: Redis Integration & Emulator Launch
+- Added `start-redis-emulator.sh` shell script to easily launch the Redis emulator inside the Docker container.
+- Added `npm run redis:emulator` script to launch the Redis emulator from the host shell.
+- Updated README: clarified that only `docker-compose up -d` is needed to start all services, and the emulator should be launched only after the NestJS app is ready.
+- Documented all Redis-related launch options and emphasized the correct launch order for the emulator and poller.
+- Standardized all code and documentation to use the term "Redis broker" where appropriate.
+- Ensured the `Transaction` entity uses the lowercase `transaction` collection for consistency in MongoDB.
+- All Redis configuration (host, port, rate limit) is now environment-driven and type-safe.
+
+## 8: Pagination Meta for Aggregation & Payout Controllers
+- Added pagination metadata (`meta` object) to the responses of aggregation and payout controllers, matching the structure of the transaction controller.
+- The `meta` object includes: current page, total items, items per page, and total pages, making API responses more consistent and client-friendly.
+
 ## Minor/Other Changes
 - Updated `.env` and Docker-related instructions in `README.md`.
 - Improved error handling and logging in migration scripts.

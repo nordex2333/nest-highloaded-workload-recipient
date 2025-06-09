@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { AggregationService } from './aggregation.service';
 import { SwaggerDocs } from '../swagger/swagger-docs';
@@ -21,7 +21,13 @@ export class AggregationController {
   @Get('payouts/all')
   @ApiOperation(SwaggerDocs.aggregation.getAggregatedPayouts)
   @ApiResponse({ status: 200, type: [PayoutDto] })
-  async getAggregatedPayouts(): Promise<PayoutDto[]> {
-    return this.aggregationService.getAggregatedPayouts();
+  async getAggregatedPayouts(
+    @Query('limit') limit: string = '100',
+    @Query('page') page: string = '1',
+  ): Promise<{ items: PayoutDto[]; meta: any }> {
+    let limitNum = parseInt(limit, 10) || 100;
+    let pageNum = parseInt(page, 10) || 1;
+    let { items, meta } = await this.aggregationService.getAggregatedPayoutsWithMeta({ limit: limitNum, page: pageNum });
+    return { items, meta };
   }
 }

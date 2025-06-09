@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, ObjectIdColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 export enum TransactionType {
   EARNED = 'earned',
@@ -7,8 +8,11 @@ export enum TransactionType {
   // PAID_OUT = 'paidout'
 }
 
-@Entity()
+@Entity('transaction')
 export class Transaction {
+  @ObjectIdColumn()
+  _id: ObjectId;
+
   @PrimaryColumn()
   id: string;
 
