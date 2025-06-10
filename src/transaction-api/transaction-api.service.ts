@@ -14,24 +14,14 @@ export class TransactionApiService {
     startDate?: string,
     endDate?: string,
     page = 1,
-    limit = 1000,
+    limit = 100,
   ) {
-    //AK NEW USE IT
     let where: any = startDate || endDate ? {
         createdAt: Between(
             new Date(startDate || 0), 
             new Date(endDate || Date.now())
         )
     } : {};
-
-    // let where: any = {};
-    // if (startDate && endDate) {
-    //   where.createdAt = Between(new Date(startDate), new Date(endDate));
-    // } else if (startDate) {
-    //   where.createdAt = Between(new Date(startDate), new Date());
-    // } else if (endDate) {
-    //   where.createdAt = Between(new Date(0), new Date(endDate));
-    // }
 
     let [items, totalItems] = await this.transactionRepository.findAndCount({
       where,
