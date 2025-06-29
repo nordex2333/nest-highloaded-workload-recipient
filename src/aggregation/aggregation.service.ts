@@ -2,72 +2,67 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction, TransactionType } from '../transaction-api/transaction.entity';
+import { UserAggregate } from '../aggregation/user-aggregate.entity';
 
 @Injectable()
 export class AggregationService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
+    @InjectRepository(UserAggregate)
+    private readonly userAggregateRepository: Repository<UserAggregate>,
   ) {}
 
   async aggregateDataByUserId(userId: string) {
-    let transactions = await this.transactionRepository.find({ where: { userId } });
-
-    let totals: Record<TransactionType, number> = {
-      [TransactionType.EARNED]: 0,
-      [TransactionType.SPENT]: 0,
-      [TransactionType.PAYOUT]: 0,
-    };
-
-    for (let tx of transactions) {
-      if (totals[tx.type] !== undefined) {
-        totals[tx.type] += tx.amount;
-      }
+    // Fetch pre-aggregated data for the user from UserAggregate
+    const aggregate = await this.userAggregateRepository.findOne({ where: { userId } });
+    if (!aggregate) {
+      return {
+        userId,
+        balance: 0,
+        totals: {
+          [TransactionType.EARNED]: 0,
+          [TransactionType.SPENT]: 0,
+          [TransactionType.PAYOUT]: 0,
+        },
+      };
     }
-
-    let balance = totals[TransactionType.EARNED] - totals[TransactionType.SPENT] - totals[TransactionType.PAYOUT];
-
     return {
-      userId,
-      balance,
-      totals,
+      userId: aggregate.userId,
+      balance: aggregate.balance,
+      totals: {
+        [TransactionType.EARNED]: aggregate.totalEarned,
+        [TransactionType.SPENT]: aggregate.totalSpent,
+        [TransactionType.PAYOUT]: aggregate.totalPayout,
+      },
     };
   }
 
   async getAggregatedPayouts(options?: { limit?: number; page?: number }) {
     let limit = options?.limit ?? 100;
     let page = options?.page ?? 1;
-    let payouts = await this.transactionRepository.find({
-      where: { type: TransactionType.PAYOUT },
+    let [items, totalItems] = await this.userAggregateRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
     });
-    let result: Record<string, number> = {};
-    for (let tx of payouts) {
-      result[tx.userId] = (result[tx.userId] || 0) + tx.amount;
-    }
-    return Object.entries(result).map(([userId, payoutAmount]) => ({ userId, payoutAmount }));
+    let filtered = items.filter(u => u.totalPayout > 0);
+    return filtered.map(u => ({ userId: u.userId, payoutAmount: u.totalPayout }));
   }
 
   async getAggregatedPayoutsWithMeta(options?: { limit?: number; page?: number }) {
     let limit = options?.limit ?? 100;
     let page = options?.page ?? 1;
-    let [payouts, totalItems] = await this.transactionRepository.findAndCount({
-      where: { type: TransactionType.PAYOUT },
+    let [items, totalItems] = await this.userAggregateRepository.findAndCount({
       skip: (page - 1) * limit,
       take: limit,
     });
-    let result: Record<string, number> = {};
-    for (let tx of payouts) {
-      result[tx.userId] = (result[tx.userId] || 0) + tx.amount;
-    }
-    let items = Object.entries(result).map(([userId, payoutAmount]) => ({ userId, payoutAmount }));
+    let filtered = items.filter(u => u.totalPayout > 0);
     let totalPages = Math.ceil(totalItems / limit);
     return {
-      items,
+      items: filtered.map(u => ({ userId: u.userId, payoutAmount: u.totalPayout })),
       meta: {
         totalItems,
-        itemCount: items.length,
+        itemCount: filtered.length,
         itemsPerPage: limit,
         totalPages,
         currentPage: page,
