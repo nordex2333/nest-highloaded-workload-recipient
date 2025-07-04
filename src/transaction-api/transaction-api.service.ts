@@ -25,7 +25,6 @@ export class TransactionApiService {
       if (startDate) where.createdAt.$gte = new Date(startDate);
       if (endDate) where.createdAt.$lte = new Date(endDate);
     }
-
     let [items, totalItems] = await this.transactionRepository.findAndCount({
       where,
       skip: (pageNum - 1) * limitNum,
