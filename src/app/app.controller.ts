@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
+import { SwaggerDocs } from '../swagger/swagger-docs';
 
 @ApiTags('Health')
 @Controller()
@@ -9,35 +10,25 @@ export class AppController {
   constructor(private readonly dataSource: DataSource) {}
 
   @Get('/health')
-  @ApiOperation({ summary: 'Health check', description: 'Checks the health of the application.' })
-  @ApiResponse({ status: 200, description: 'healthy.' })
+  @ApiOperation(SwaggerDocs.app.healthCheck)
+  @ApiResponse(SwaggerDocs.app.healthCheck.responses[200])
   healthCheck() {
     return { status: 'ok' };
   }
 
   @Get('/db-health')
-  @ApiOperation({ summary: 'DB health check', description: 'Checks the health of the application and database connection.' })
-  @ApiResponse({ status: 200, description: 'The db is connected to app.' })
-  @ApiResponse({ status: 500, description: 'The db is not connected to app.' })
+  @ApiOperation(SwaggerDocs.app.dbHealthCheck)
+  @ApiResponse(SwaggerDocs.app.dbHealthCheck.responses[200])
+  @ApiResponse(SwaggerDocs.app.dbHealthCheck.responses[500])
   async dbHealthCheck() {
-    try {
-      let isConnected = this.dataSource.isInitialized;
+    let isConnected = this.dataSource.isInitialized;
 
-      if (isConnected) {
-        return {
-          status: 'ok',
-          database: 'connected',
-        };
-      } else {
-        throw new Error('Database not connected');
-      }
-    } catch (error) {
-      console.error('Database connection error:', error);
-      return {
-        status: 'ok',
-        database: 'disconnected',
-      };
+    if (isConnected) {
+      return { status: 'ok', database: 'connected' };
     }
+
+    console.error('Database connection error: Database not connected');
+    return { status: 'ok', database: 'disconnected' };
   }
 
 }

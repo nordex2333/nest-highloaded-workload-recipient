@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PayoutsService } from './payouts.service';
+import { PayoutService } from './payout.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Transaction } from '../transaction-api/transaction.entity';
 import { Repository } from 'typeorm';
@@ -10,13 +10,13 @@ let mockTransactions: Transaction[] = [
   { id: '3', userId: 'user2', type: 'payout', amount: 50, createdAt: new Date(), } as Transaction,
 ];
 
-describe('PayoutsService', () => {
-  let service: PayoutsService;
+describe('PayoutService', () => {
+  let service: PayoutService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PayoutsService,
+        PayoutService,
         {
           provide: getRepositoryToken(Transaction),
           useValue: {
@@ -36,7 +36,7 @@ describe('PayoutsService', () => {
       ],
     }).compile();
 
-    service = module.get<PayoutsService>(PayoutsService);
+    service = module.get<PayoutService>(PayoutService);
   });
 
   it('should aggregate requested payouts for all users', async () => {
@@ -48,7 +48,7 @@ describe('PayoutsService', () => {
   });
 
   it('should aggregate payouts by userId', async () => {
-    let result = await service.getPayoutsByUserId('user1');
-    expect(result).toEqual({ userId: 'user1', payoutAmount: 50 });
+    let result = await service.getRequestedPayouts();
+    expect(result.find(r => r.userId === 'user1').payoutAmount).toBe(50);
   });
 });

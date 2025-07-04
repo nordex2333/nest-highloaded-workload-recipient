@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AggregationModule } from '../aggregation/aggregation.module';
-import { PayoutsModule } from '../payouts/payouts.module';
+import { PayoutModule } from '../payout/payout.module';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TransactionApiModule } from '../transaction-api/transaction-api.module';
 @Module({
   imports: [
@@ -17,14 +16,16 @@ import { TransactionApiModule } from '../transaction-api/transaction-api.module'
         url: configService.get<string>('DATABASE_URL'),
         database: configService.get<string>('MONGO_DATABASE'),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true,
+        synchronize: false,
+        migrations: [__dirname + '/../migrations/**/*{.ts,.js}'],
+        migrationsRun: configService.get<boolean>('RUN_MIGRATIONS') || false,
       }),
     }),
     AggregationModule,
-    PayoutsModule,
+    PayoutModule,
     TransactionApiModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}

@@ -4,37 +4,12 @@ import { Repository } from 'typeorm';
 import { Transaction, TransactionType } from '../transaction-api/transaction.entity';
 
 @Injectable()
-export class AggregationService {
+export class PayoutService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
   ) {}
-
-  async aggregateDataByUserId(userId: string) {
-    let transactions = await this.transactionRepository.find({ where: { userId } });
-
-    let totals: Record<TransactionType, number> = {
-      [TransactionType.EARNED]: 0,
-      [TransactionType.SPENT]: 0,
-      [TransactionType.PAYOUT]: 0,
-    };
-
-    for (let tx of transactions) {
-      if (totals[tx.type] !== undefined) {
-        totals[tx.type] += tx.amount;
-      }
-    }
-
-    let balance = totals[TransactionType.EARNED] - totals[TransactionType.SPENT] - totals[TransactionType.PAYOUT];
-
-    return {
-      userId,
-      balance,
-      totals,
-    };
-  }
-
-  async getAggregatedPayouts(options?: { limit?: number; page?: number }) {
+  async getRequestedPayouts(options?: { limit?: number; page?: number }) {
     let limit = options?.limit ?? 100;
     let page = options?.page ?? 1;
     let payouts = await this.transactionRepository.find({
@@ -49,7 +24,7 @@ export class AggregationService {
     return Object.entries(result).map(([userId, payoutAmount]) => ({ userId, payoutAmount }));
   }
 
-  async getAggregatedPayoutsWithMeta(options?: { limit?: number; page?: number }) {
+  async getRequestedPayoutsWithMeta(options?: { limit?: number; page?: number }) {
     let limit = options?.limit ?? 100;
     let page = options?.page ?? 1;
     let [payouts, totalItems] = await this.transactionRepository.findAndCount({

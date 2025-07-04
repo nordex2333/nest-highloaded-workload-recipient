@@ -14,6 +14,7 @@ services:
     command: >
       sh -c "
       npm install -g @nestjs/cli &&
+      npm install &&
       if [ ! -f package.json ]; then 
         nest new . --package-manager npm --skip-git --language ts;
       fi &&
@@ -34,10 +35,12 @@ services:
       npm install @nestjs/jwt @nestjs/passport passport passport-jwt &&
       npm install @nestjs/config &&
       npm install @nestjs/typeorm typeorm mongodb &&
+      npm install ioredis &&
       npm run start:dev
       "
     depends_on:
       - mongo
+      - redis
 
   mongo:
     image: mongo:latest
@@ -67,5 +70,15 @@ services:
       ME_CONFIG_MONGODB_PORT: ${MONGO_PORT_INTERNAL}
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
 
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis-broker
+    restart: always
+    ports:
+      - "${REDIS_PORT_EXTERNAL}:${REDIS_PORT}"
+    volumes:
+      - redis_data:/data
+
 volumes:
   mongo_data:
+  redis_data:

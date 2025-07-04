@@ -1,7 +1,18 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, ObjectIdColumn } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
-@Entity()
+export enum TransactionType {
+  EARNED = 'earned',
+  SPENT = 'spent',
+  PAYOUT = 'payout',
+  // PAID_OUT = 'paidout'
+}
+
+@Entity('transactions')
 export class Transaction {
+  @ObjectIdColumn()
+  _id: ObjectId;
+
   @PrimaryColumn()
   id: string;
 
@@ -11,8 +22,12 @@ export class Transaction {
   @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
-  type: string; // 'earned' | 'spent' | 'payout'
+  @Column({
+    type: 'enum',
+    enum: TransactionType,
+    default: TransactionType.EARNED
+  })
+  type: TransactionType;
 
   @Column('float')
   amount: number;
